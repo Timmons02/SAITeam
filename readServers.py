@@ -4,15 +4,15 @@ def readServers(file1, file2):
     departs.readline() # first line is junk, get rid of it
     x = departs.readline()        
     while x != '':
-        val = x.partition(',')[0]
-        key = (x.partition(',')[2]).partition('\n')[0]
+        val = x.split(',')[0]
+        key = (x.split(',')[1]).split('\n')[0]
         serversDict[key] = val,
         x = departs.readline()
     ips.readline() # first line is junk, get rid of it
     w = ips.readline() 
     while w != '':
-        key = w.partition(',')[0]
-        val = ((w.partition(',')[2]).partition(',')[2]).partition('\n')[0]
+        key = w.split(',')[0]
+        val = (w.split(',')[2]).split('\n')[0]
         if val in serversDict:
             department = serversDict[val]
             if key in serversDict:
