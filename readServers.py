@@ -22,7 +22,6 @@ def readServers(file1, file2):
                 serversDict[key] = department
         w = ips.readline()
     return serversDict
-
 # Notes on usage:
 
 # Call the method readServers() with the two files as parameters
