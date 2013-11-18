@@ -4,6 +4,7 @@ import sys
 import getopt
 import parser
 import dbManager
+import Department
 def main(argv):
 	#getting the inputfile name and ouputfolder path 
 	input_file = ''
@@ -23,21 +24,12 @@ def main(argv):
 		sys.exit(2)
 
 	#connecting to the database
-	
-	cursor = None
-	conection = None
-	try:
-		connection = mysql.connector.connect(user='CS523',password='^^@keMYd@y',
-											 host='127.0.0.1', database='CS523')
-		cursor = connection.cursor()
-	except mysql.connector.Error, err:
-		print("Database connection error: ")
-		print(err)
 
-
+	database = dbManager.dbManager()
+	database.connect()
 	# A dictionary that returns the servers that belong to a given ip
 
-	servDict = readServers.readServers("/opt/Qualys523/data/HOSTS.csv", "/opt/Qualys523/results/ag_list.csv")
+	servDict = readServers.readServers("/home/cmanker/HOSTS.csv", "/home/cmanker/ag_list.csv")
 	
 	# opening file to be parsed 
 	
@@ -51,9 +43,20 @@ def main(argv):
 	aParser = parser.MyHTMLParser()
 	aParser.feed(html_part)
 	
-	servers = aParser.getList()
+	servers = aParser.server_list
 
-	dbManager.updateDb(cursor, connection, servers)
+	database.updateDb(servers)
+	
+	departments = dict()
+	for server in servers:
+		for departs in servDict[server.getIp()]:
+			if departs in departments:
+				departments[departs].addServer(server)
+			else:
+				departments[departs] = Department.Department(database,server,output_folder,departs,"not yet") 
+			# ADD EMAIL STUFF 
+	for departs in departments:
+		departments[departs].writeFile()
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
