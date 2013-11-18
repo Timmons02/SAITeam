@@ -8,7 +8,7 @@ class Department:
 	def writeFile(self):
 		ninetyDays = list()
 		sixtyDays = list()
-		thirtyDays = list()
+		thirtyDays = list() # Creates a list of vulns over each amount of days and to which server they belong
 		zeroDays = list()
 		self.date = self.servers[0].getDate() 
 		for server in self.servers:
@@ -22,7 +22,7 @@ class Department:
 					thirtyDays.append((vuln,server.getIpHost()))
 				elif days >= 0:
 					zeroDays.append((vuln,server.getIpHost()))
-		file = open(self.path+"/"+self.name+".txt",'w')  # is path properly formatted here?
+		file = open(self.path+"/"+self.name+".txt",'w')  #create files, writes vulns from oldest to youngest
 		file.write("These are the results of a monthly scan of your system conducted on "+self.date+".\n\n\n")
 		if len(sixtyDays) > 0:
 			file.write("The following vulnerabilities have been on your system for a period greater than 60 days. Please address them as soon as possible or immediate action will be taken by the university.\n\n")
@@ -41,7 +41,7 @@ class Department:
 			self.writeMail()  
 		if len(ninetyDays) > 0: 
 			self.referral(ninetyDays)
-	def writeMail(self):
+	def writeMail(self): # Writes an email based on the summary files
 		import smtplib
 		from email.MIMEText import MIMEText 
 		text = open("./"+self.path+"/"+self.name+".txt",'r')
@@ -52,12 +52,12 @@ class Department:
 		msg['From'] = 'charlesmanker@gmail.com' # We will change this later
 		smtp = smtplib.SMTP('smtp.gmail.com',587)
 		smtp.ehlo()  
-		smtp.starttls()
+		smtp.starttls() # doing the proper protocol to connect to gmail
 		smtp.ehlo()
 		smtp.login('charlesmanker@gmail.com','fakepassword')
 		smtp.sendmail('charlesmanker@gmail.com',['charlesmanker@gmail.com'],msg.as_string())
 		smtp.quit()
-	def referral(self,ninetyDays):
+	def referral(self,ninetyDays): # This is called in the case where you have >90 days vulns
 		import smtplib
 		from email.mime.text import MIMEText
 		text = "The department "+self.name+" has had the following vulnerabilities on its system for a period of greater than 90 days.\n\n"
