@@ -1,5 +1,4 @@
 from HTMLParser import HTMLParser
-#import  mysql.connector
 
 # This program is intended for parsing a Qualys HTML file resulting 
 # from a Qualys scan. The format and structure of the HTML file is 
