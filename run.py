@@ -5,6 +5,7 @@ import getopt
 import parser
 import dbManager
 import Department
+import os
 def main(argv):
 	#getting the inputfile name and ouputfolder path 
 	input_file = ''
@@ -22,6 +23,10 @@ def main(argv):
 	if (len(input_file) == 0):
 		print "usage: run.py -i <inputfile> -o <outputfolder>"
 		sys.exit(2)
+
+	# Check to see if the folder you are writing to exists or not, and creates it
+	if not os.path.exists("./"+output_folder):
+		os.makedirs("./"+output_folder)	
 
 	#connecting to the database
 

@@ -44,7 +44,7 @@ class Department:
 	def writeMail(self):
 		import smtplib
 		from email.MIMEText import MIMEText 
-		text = open("/home/cmanker/"+self.path+"/"+self.name+".txt",'r')
+		text = open("./"+self.path+"/"+self.name+".txt",'r')
 		msg = MIMEText(text.read())
 		text.close()
 		msg['Subject'] = self.name+" security scan summary "+self.date
