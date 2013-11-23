@@ -50,14 +50,14 @@ def main(argv):
 	aParser.feed(html_part)
 	
 	servers = aParser.server_list
-	print len(servers)+' machines in scan.'
+	print str(len(servers))+' machines in scan.'
 
 	database.updateDb(servers)
 	
 	print 'Do you wish to send out notification emails for this scan?'
 	emailflag = -1
-	email = raw_input()
 	while (emailflag == -1):
+		email = raw_input()
 		if (email == 'yes') or (email == 'y'):
 			emailflag = 1
 		elif (email == 'no') or (email == 'n'):
