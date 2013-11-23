@@ -9,38 +9,35 @@ class Department:
 		ninetyDays = list()
 		sixtyDays = list()
 		thirtyDays = list() # Creates a list of vulns over each amount of days and to which server they belong
-		zeroDays = list()
 		self.date = self.servers[0].getDate() 
 		for server in self.servers:
 			for vuln in server.getVuls():
 				days = self.database.dateDiff(self.database.first_saw(server.getIp(),vuln.getQID()),self.date)
 				if days >= 90:
-					ninetyDays.append((vuln,server.getIpHost()))
+					ninetyDays.append((vuln,server.getIpHost(),days))
 				elif days >= 60:
-					sixtyDays.append((vuln,server.getIpHost()))
+					sixtyDays.append((vuln,server.getIpHost(),days))
 				elif days >= 30:
-					thirtyDays.append((vuln,server.getIpHost()))
-				elif days >= 0:
-					zeroDays.append((vuln,server.getIpHost()))
+					thirtyDays.append((vuln,server.getIpHost(),days))
+
 		file = open(self.path+"/"+self.name+".txt",'w')  #create files, writes vulns from oldest to youngest
 		file.write("These are the results of a monthly scan of your system conducted on "+self.date+".\n\n\n")
+		if len(ninetyDays) > 0: 
+			file.write("The following vulnerabilities have been on your system for a period longer than 90 days and are in gross violation of UNC's security policies. You will be contacted by ITS Security.\n\n")
+			for vuln in ninetyDays:
+				file.write(vuln[2]+" days - "vuln[1]+" QID: "+vuln[0].getQID()+" Level:"+vuln[0].getLevel()+" Threat: "+vuln[0].getSum_threat()+" Impact: "+vuln[0].getSum_impact()+"\n\n")
+			self.referral(ninetyDays)
 		if len(sixtyDays) > 0:
 			file.write("The following vulnerabilities have been on your system for a period greater than 60 days. Please address them as soon as possible or immediate action will be taken by the university.\n\n")
 			for vuln in sixtyDays:
-				file.write(vuln[1]+": QID: "+vuln[0].getQID()+" Threat: "+vuln[0].getSum_threat()+" Impact: "+vuln[0].getSum_impact()+"\n\n")
+				file.write(vuln[2]+" days - "vuln[1]+" QID: "+vuln[0].getQID()+" Level:"+vuln[0].getLevel()+" Threat: "+vuln[0].getSum_threat()+" Impact: "+vuln[0].getSum_impact()+"\n\n")
 		if len(thirtyDays) > 0:
 			file.write("The following vulnerabilities have been on your system for a period greater than 30 days and are no longer in compliance with UNC standards. Please address them as soon as possible.\n\n")
 			for vuln in thirtyDays:
-				file.write(vuln[1]+" QID: "+vuln[0].getQID()+" Threat: "+vuln[0].getSum_threat()+" Impact: "+vuln[0].getSum_impact()+"\n\n")
-		if len(zeroDays) > 0:
-			file.write("The following vulnerabilities have newly arisen on your systems. Please patch them as soon as possible.\n\n")
-			for vuln in zeroDays:
-				file.write(vuln[1]+" QID: "+vuln[0].getQID()+" Threat: "+vuln[0].getSum_threat()+" Impact: "+vuln[0].getSum_impact()+"\n\n")
+				file.write(vuln[2]+" days - "vuln[1]+" QID: "+vuln[0].getQID()+" Level:"+vuln[0].getLevel()+" Threat: "+vuln[0].getSum_threat()+" Impact: "+vuln[0].getSum_impact()+"\n\n")
 		file.close()
-		if (len(sixtyDays) != 0) or (len(thirtyDays) != 0) or (len(zeroDays) != 0):
+		if (len(sixtyDays) != 0) or (len(thirtyDays) != 0) or (len(ninetyDays) != 0):
 			self.writeMail()  
-		if len(ninetyDays) > 0: 
-			self.referral(ninetyDays)
 	def writeMail(self): # Writes an email based on the summary files
 		import smtplib
 		from email.MIMEText import MIMEText 
@@ -62,7 +59,7 @@ class Department:
 		from email.mime.text import MIMEText
 		text = "The department "+self.name+" has had the following vulnerabilities on its system for a period of greater than 90 days.\n\n"
 		for vuln in ninetyDays:
-			text = text + vuln[1]+" QID: "+vuln[0].getQID()+" Description: "+vuln[0].getSum_threat()+"\n\n"
+			text = text + vuln[2] + " days " vuln[1]+" QID: "+vuln[0].getQID()+" Description: "+vuln[0].getSum_threat()+"\n\n"
 		msg = MIMEText(text)
 		msg['Subject'] = "VPR_Referral "+self.name
 		msg['To'] = 'charlesmanker@gmail.com' # security@unc.edu
