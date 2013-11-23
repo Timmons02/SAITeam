@@ -54,13 +54,23 @@ def main(argv):
 
 	database.updateDb(servers)
 	
+	print 'Do you wish to send out notification emails for this scan?'
+	emailflag = -1
+	email = raw_input()
+	while (emailflag == -1):
+		if (email == 'yes') or (email == 'y'):
+			emailflag = 1
+		elif (email == 'no') or (email == 'n'):
+			emailflag = 0
+		else:
+			print 'Did not understand input, please use yes/y or no/n.'
 	departments = dict()
 	for server in servers:
 		for departs in servDict[server.getIp()]:
 			if departs in departments:
 				departments[departs].addServer(server)
 			else:
-				departments[departs] = Department.Department(database,server,output_folder,departs,"not yet") 
+				departments[departs] = Department.Department(database,server,output_folder,departs,"not yet",emailflag) 
 			# ADD EMAIL STUFF 
 	for departs in departments:
 		departments[departs].writeFile()
