@@ -1,10 +1,11 @@
 class Department:
-	def __init__(self, database, server, folder, name, emails):
+	def __init__(self, database, server, folder, name, emails, emailflag):
 		self.database = database
 		self.servers = [server]
 		self.path = folder
 		self.name = name
 		self.emails = emails
+		self.emailflag = emailflag
 	def writeFile(self):
 		ninetyDays = list()
 		sixtyDays = list()
@@ -26,7 +27,6 @@ class Department:
 			file.write("The following vulnerabilities have been on your system for a period longer than 90 days and are in gross violation of UNC's security policies. You will be contacted by ITS Security.\n\n")
 			for vuln in ninetyDays:
 				file.write(vuln[2]+" days - "vuln[1]+" QID: "+vuln[0].getQID()+" Level:"+vuln[0].getLevel()+" Threat: "+vuln[0].getSum_threat()+" Impact: "+vuln[0].getSum_impact()+"\n\n")
-			self.referral(ninetyDays)
 		if len(sixtyDays) > 0:
 			file.write("The following vulnerabilities have been on your system for a period greater than 60 days. Please address them as soon as possible or immediate action will be taken by the university.\n\n")
 			for vuln in sixtyDays:
@@ -36,8 +36,9 @@ class Department:
 			for vuln in thirtyDays:
 				file.write(vuln[2]+" days - "vuln[1]+" QID: "+vuln[0].getQID()+" Level:"+vuln[0].getLevel()+" Threat: "+vuln[0].getSum_threat()+" Impact: "+vuln[0].getSum_impact()+"\n\n")
 		file.close()
-		if (len(sixtyDays) != 0) or (len(thirtyDays) != 0) or (len(ninetyDays) != 0):
+		if (len(sixtyDays) != 0) or (len(thirtyDays) != 0) or (len(ninetyDays) != 0) and (self.emailflag == 1):
 			self.writeMail()  
+			self.referral(ninetyDays)
 	def writeMail(self): # Writes an email based on the summary files
 		import smtplib
 		from email.MIMEText import MIMEText 
