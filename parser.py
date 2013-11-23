@@ -1,4 +1,5 @@
 from HTMLParser import HTMLParser
+#import  mysql.connector
 
 # This program is intended for parsing a Qualys HTML file resulting 
 # from a Qualys scan. The format and structure of the HTML file is 
@@ -48,14 +49,17 @@ class Server:
 #    sum_impact - the impact summary
 #    sum_solution - the solution summary
 # This class has Getter and Setter methods for each field.
-class Vulnerability:
+class Vulnerability():
     
-    def __init__(self, qid, level, threat, impact, solution):
+    def __init__(self, name, qid, level, threat, impact, solution):
+        self.name = name
         self.qid = qid
         self.level = level
         self.sum_threat = threat
         self.sum_impact = impact
         self.sum_solution = solution
+    def getName(self):
+        return self.name
     def getQID(self):
         return self.qid
     def getLevel(self):
@@ -66,6 +70,8 @@ class Vulnerability:
         return self.sum_impact
     def getSum_solution(self):
         return self.sum_solution
+    def setName(self, name):
+        self.name = name
     def setQID(self, qid):
         self.qid = qid
     def setLevel(self, level):
@@ -89,6 +95,9 @@ class MyHTMLParser(HTMLParser):
     server_list = []           # server_list of server objects
     list_index = -1
     date = "none"
+    cur = None
+    con = None
+    name = "none"
     threat = "none"
     impact = "none"
     solution = "none"
@@ -101,10 +110,12 @@ class MyHTMLParser(HTMLParser):
     date_next_dd_tag = 0
     vul_next_img_tag = 0
     qid_next_dd_tag = 0
+    name_next_a_tag = 0
     qid_section = 0
     date_ready = 0
     vul_ready = 0
     qid_ready = 0
+    name_ready = 0
     not_alive_section = 0
     win_fail_section = 0
     unixcisco_fail_section = 0
@@ -131,6 +142,7 @@ class MyHTMLParser(HTMLParser):
                 print "Server failed to scan on port " + str(i.getFailedPort())
             for j in i.getVuls():
                 print "  Vulnerability found."
+                print "    Name: " + j.getName()
                 print "    QID: " + str(j.getQID())
                 print "    Level: " + str(j.getLevel())
                 print "    Threat: " + j.getSum_threat()
@@ -149,6 +161,7 @@ class MyHTMLParser(HTMLParser):
         elif tag == "div" and len(attrs)>1 and attrs[0]==('class','severity_icon') and (attrs[1]==('title','Vulnerability - level 4') or attrs[1]==('title','Vulnerability - level 5')): 
             self.vul_next_img_tag = 1
             self.ready_for_sum = 1
+            self.name_next_a_tag = 1
         elif self.vul_next_img_tag == 1 and tag == "img":
             self.vul_ready = 1
             self.qid_section = 1             
@@ -156,6 +169,9 @@ class MyHTMLParser(HTMLParser):
             self.qid_next_dd_tag = 1
         elif self.qid_next_dd_tag == 1 and tag == "dd":
             self.qid_ready = 1  
+        elif self.name_next_a_tag == 1 and tag == "a":
+            self.name_ready = 1
+            self.name_next_a_tag = 0
         # Handling hosts that were not scanned
         elif tag == "div" and len(attrs)>0 and attrs[0]==('id', '94652'):
             self.not_alive_section = 1
@@ -206,7 +222,7 @@ class MyHTMLParser(HTMLParser):
             self.sum_solution = 0
             self.sum_section = 0
             self.ready_for_sum = 0
-            self.server_list[self.list_index].addVulnerability(Vulnerability(self.qid, self.level, self.threat, self.impact, self.solution))
+            self.server_list[self.list_index].addVulnerability(Vulnerability(self.name, self.qid, self.level, self.threat, self.impact, self.solution))
         # Data contains a date.
         elif self.date_ready == 1:
             self.date = data
@@ -236,6 +252,10 @@ class MyHTMLParser(HTMLParser):
             self.qid_next_dd_tag = 0
             self.qid_ready = 0
             self.qid_section = 0
+        # Data contains a vulnerability name
+        elif self.name_ready == 1:
+            self.name = data
+            self.name_ready = 0
         # Data contains an Oracle server that failed to scan.
         # Creates the server object and adds it to the server list.
         elif self.oracle_fail == 1:
@@ -243,7 +263,7 @@ class MyHTMLParser(HTMLParser):
             serv = Server(data)
             serv.setDate(self.date)
             serv.setFailedPort(self.oracle_port)
-            serv.addVulnerability(Vulnerability(60000001, 5, "Oracle Authentication failed for this host.", "This server may be vulnerable.", "Scan this host."))
+            serv.addVulnerability(Vulnerability("Oracle Authentication failed", 60000001, 5, "Oracle Authentication failed for this host.", "This server may be vulnerable.", "Scan this host."))
             self.server_list.append(serv)
             self.oracle_fail = 0
         # Data contains a failed Oracle port.
@@ -257,7 +277,7 @@ class MyHTMLParser(HTMLParser):
             for i in h:
                 serv = Server(i)
                 serv.setDate(self.date)
-                serv.addVulnerability(Vulnerability(60000001, 5, "Windows Authentication failed for this host.", "This server may be vulnerable.", "Scan this host."))
+                serv.addVulnerability(Vulnerability("Windows Authentication failed", 60000001, 5, "Windows Authentication failed for this host.", "This server may be vulnerable.", "Scan this host."))
                 self.server_list.append(serv)
             self.win_fail = 0
             self.win_fail_section = 0
@@ -268,7 +288,7 @@ class MyHTMLParser(HTMLParser):
             for i in h:
                 serv = Server(i)
                 serv.setDate(self.date)
-                serv.addVulnerability(Vulnerability(60000001, 5, "Unix/Cisco Authentication failed for this host.", "This server may be vulnerable.", "Scan this host."))
+                serv.addVulnerability(Vulnerability("Unix/Cisco Authentication failed", 60000001, 5, "Unix/Cisco Authentication failed for this host.", "This server may be vulnerable.", "Scan this host."))
                 self.server_list.append(serv)
             self.unixcisco_fail = 0
             self.unixcisco_fail_section = 0
@@ -279,7 +299,7 @@ class MyHTMLParser(HTMLParser):
             for i in h:
                 serv = Server(i)
                 serv.setDate(self.date)
-                serv.addVulnerability(Vulnerability(60000002, 5, "Host not alive for scan.", "This server may be vulnerable.", "Scan this host."))
+                serv.addVulnerability(Vulnerability("Host not alive", 60000002, 5, "Host not alive for scan.", "This server may be vulnerable.", "Scan this host."))
                 self.server_list.append(serv)
             self.not_alive = 0
         # Current data is not useful; but the section is relevant.
@@ -325,3 +345,18 @@ class MyHTMLParser(HTMLParser):
     # This method returns the list of servers.
     def getList (self):
         return self.server_list
+    
+    def setCur(self, cur, con):
+        self.cur=cur
+        self.con=con        
+                
+print "Execution has begun."
+
+# instantiate the parser and fed it some HTML
+parser = MyHTMLParser()
+
+# open a file and feed it to the parser
+my_file = open("fakehtml.html", "r")
+parser.feed(my_file.read())
+parser.printList()
+print "Execution complete."
