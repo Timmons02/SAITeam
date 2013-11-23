@@ -26,6 +26,7 @@ def main(argv):
 
 	# Check to see if the folder you are writing to exists or not, and creates it
 	if not os.path.exists("./"+output_folder):
+		print 'Directory not found, creating...'
 		os.makedirs("./"+output_folder)	
 
 	#connecting to the database
@@ -49,6 +50,7 @@ def main(argv):
 	aParser.feed(html_part)
 	
 	servers = aParser.server_list
+	print len(servers)+' machines in scan.'
 
 	database.updateDb(servers)
 	
