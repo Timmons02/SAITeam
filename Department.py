@@ -27,15 +27,16 @@ class Department:
 		if len(ninetyDays) > 0: 
 			file.write("The following vulnerabilities have been on your system for a period longer than 90 days and are in gross violation of UNC's security policies. You will be contacted by ITS Security.\n\n")
 			for vuln in ninetyDays:
-				file.write(str(vuln[2])+" days - "+vuln[1]+" QID: "+vuln[0].getQID()+" Level:"+vuln[0].getLevel()+" Threat: "+vuln[0].getSum_threat()+" Impact: "+vuln[0].getSum_impact()+"\n\n")
+				file.write(str(vuln[2])+" days - "+vuln[1]+" QID: "+vuln[0].getQID()+" "+vuln[0].getName()" Level:"+vuln[0].getLevel()+" Threat: "+vuln[0].getSum_threat()+" Impact: "+vuln[0].getSum_impact()+"\n\n")
 		if len(sixtyDays) > 0:
 			file.write("The following vulnerabilities have been on your system for a period greater than 60 days. Please address them as soon as possible or immediate action will be taken by the university.\n\n")
 			for vuln in sixtyDays:
-				file.write(str(vuln[2])+" days - "+vuln[1]+" QID: "+vuln[0].getQID()+" Level:"+vuln[0].getLevel()+" Threat: "+vuln[0].getSum_threat()+" Impact: "+vuln[0].getSum_impact()+"\n\n")
+				file.write(str(vuln[2])+" days - "+vuln[1]+" QID: "+vuln[0].getQID()+" "+vuln[0].getName()" Level:"+vuln[0].getLevel()+" Threat: "+vuln[0].getSum_threat()+" Impact: "+vuln[0].getSum_impact()+"\n\n")
 		if len(thirtyDays) > 0:
 			file.write("The following vulnerabilities have been on your system for a period greater than 30 days and are no longer in compliance with UNC standards. Please address them as soon as possible.\n\n")
 			for vuln in thirtyDays:
-				file.write(str(vuln[2])+" days - "+vuln[1]+" QID: "+vuln[0].getQID()+" Level:"+vuln[0].getLevel()+" Threat: "+vuln[0].getSum_threat()+" Impact: "+vuln[0].getSum_impact()+"\n\n")
+				file.write(str(vuln[2])+" days - "+vuln[1]+" QID: "+vuln[0].getQID()+" "+vuln[0].getName()" Level:"+vuln[0].getLevel()+" Threat: "+vuln[0].getSum_threat()+" Impact: "+vuln[0].getSum_impact()+"\n\n")
+
 		file.close()
 		if ((len(sixtyDays) != 0) or (len(thirtyDays) != 0) or (len(ninetyDays) != 0)) and (self.emailflag == 1):
 			self.writeMail()  
