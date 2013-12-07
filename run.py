@@ -6,6 +6,7 @@ import parser
 import dbManager
 import Department
 import os
+import email_db
 def main(argv):
 	#getting the inputfile name and ouputfolder path 
 	input_file = ''
@@ -29,10 +30,14 @@ def main(argv):
 		print 'Directory not found, creating...'
 		os.makedirs("./"+output_folder)	
 
-	#connecting to the database
+	#connecting to the  main database
 
 	database = dbManager.dbManager()
 	database.connect()
+
+	# connecting to the email database
+	emails = email_db.email_db()
+	emails.connect()
 	# A dictionary that returns the servers that belong to a given ip
 
 	servDict = readServers.readServers("/home/cmanker/HOSTS.csv", "/home/cmanker/ag_list.csv")
@@ -70,7 +75,7 @@ def main(argv):
 			if departs in departments:
 				departments[departs].addServer(server)
 			else:
-				departments[departs] = Department.Department(database,server,output_folder,departs,"not yet",emailflag) 
+				departments[departs] = Department.Department(database,server,output_folder,departs, emails,emailflag) 
 			# ADD EMAIL STUFF 
 	for departs in departments:
 		departments[departs].writeFile()

@@ -20,7 +20,3 @@ class email_db:
 			ret.append(emails[i][0])
 			i= i+1
 		return ret
-
-emails = email_db()
-emails.connect()
-print emails.getEmail("CHARLES")
