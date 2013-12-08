@@ -4,7 +4,7 @@ class Department:
 		self.servers = [server]
 		self.path = folder
 		self.name = name
-		self.emails = emails
+		self.emails = emails.getEmail(self.name)
 		self.emailflag = emailflag
 	def writeFile(self):
 		ninetyDays = list()
@@ -42,19 +42,17 @@ class Department:
 			self.writeMail()  
 			self.referral(ninetyDays)
 	def writeMail(self): # Writes an email based on the summary files
+		if (len(self.emails) == 0):
+			print 'No email address associated with department '+self.name+'. You will receive a summary report but the system administrator will not.'
 		import smtplib
 		from email.MIMEText import MIMEText 
 		text = open("./"+self.path+"/"+self.name+".txt",'r')
 		msg = MIMEText(text.read())
 		text.close()
 		msg['Subject'] = self.name+" security scan summary "+self.date
-		msg['To'] = 'charlesmanker@gmail.com' # to be changeD
-		msg['From'] = 'charlesmanker@gmail.com' # We will change this later
-		smtp = smtplib.SMTP('smtp.gmail.com',587)
-		smtp.ehlo()  
-		smtp.starttls() # doing the proper protocol to connect to gmail
-		smtp.ehlo()
-		smtp.login('charlesmanker@gmail.com','fakepassword')
+		msg['To'] = 
+		msg['From'] = 'security@unc.edu'
+		smtp = smtplib.SMTP('relay.unc.edu',25)
 		smtp.sendmail('charlesmanker@gmail.com',['charlesmanker@gmail.com'],msg.as_string())
 		smtp.quit()
 	def referral(self,ninetyDays): # This is called in the case where you have >90 days vulns
@@ -62,15 +60,12 @@ class Department:
 		from email.mime.text import MIMEText
 		text = "The department "+self.name+" has had the following vulnerabilities on its system for a period of greater than 90 days.\n\n"
 		for vuln in ninetyDays:
-			text = text + str(vuln[2]) + " days "+vuln[1]+" QID: "+vuln[0].getQID()+" Description: "+vuln[0].getSum_threat()+"\n\n"
+			text = text + str(vuln[2]) + " days "+vuln[1]+" QID: "+vuln[0].getQID()+" "+vuln[0].getName()" Level:"+vuln[0].getLevel()+" Description: "+vuln[0].getSum_threat()+"\n\n"
 		msg = MIMEText(text)
 		msg['Subject'] = "VPR_Referral "+self.name
-		msg['To'] = 'charlesmanker@gmail.com' # security@unc.edu
-		msg['From'] = 'charlesmanker@gmail.com' # change this
-		smtp = smtplib.SMTP('smtp.gmail.com',587)
-		smtp.ehlo()
-		smtp.starttls()
-		smtp.login('charlesmanker@gmail.com','fakepassword')
+		msg['To'] = 'security@unc.edu' 
+		msg['From'] = 'security@unc.edu' 
+		smtp = smtplib.SMTP('relay.unc.edu',25)
 		smtp.sendmail('charlesmanker@gmail.com',['charlesmanker@gmail.com'],msg.as_string())
 		smtp.quit()
 	def addServer(self, server):
