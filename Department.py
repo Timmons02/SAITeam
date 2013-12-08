@@ -14,7 +14,6 @@ class Department:
 		for server in self.servers:
 			for vuln in server.getVuls():
 				days = self.database.dateDiff(self.date,self.database.first_saw(server.getIp(),vuln.getQID()))
-				print days
 				if days >= 90:
 					ninetyDays.append((vuln,server.getIpHost(),days))
 				elif days >= 60:
