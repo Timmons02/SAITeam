@@ -31,7 +31,7 @@ def main(argv):
 		os.makedirs("./"+output_folder)	
 
 	#connecting to the  main database
-
+	print 'Forming database connection..."
 	database = dbManager.dbManager()
 	database.connect()
 
@@ -51,6 +51,7 @@ def main(argv):
 	js, css, html_part = text.split("</script>",2)
 
 	#instantiating a parser and feeding it the html part of the file
+	print 'Parsing file, this may take some time...'
 	aParser = parser.MyHTMLParser()
 	aParser.feed(html_part)
 	
@@ -70,6 +71,7 @@ def main(argv):
 		else:
 			print 'Did not understand input, please use yes/y or no/n.'
 	departments = dict()
+	print 'Generating output...'
 	for server in servers:
 		for departs in servDict[server.getIp()]:
 			if departs in departments:
