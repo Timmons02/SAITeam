@@ -45,15 +45,19 @@ class Department:
 		if (len(self.emails) == 0):
 			print 'No email address associated with department '+self.name+'. You will receive a summary report but the system administrator will not.'
 		import smtplib
+		commaspace = ', '
+		sending = self.emails
+		sending.append('security@unc.edu')
+		tolist = commaspace.join(sending)
 		from email.MIMEText import MIMEText 
 		text = open("./"+self.path+"/"+self.name+".txt",'r')
 		msg = MIMEText(text.read())
 		text.close()
 		msg['Subject'] = self.name+" security scan summary "+self.date
-		msg['To'] = 
+		msg['To'] = tolist
 		msg['From'] = 'security@unc.edu'
 		smtp = smtplib.SMTP('relay.unc.edu',25)
-		smtp.sendmail('charlesmanker@gmail.com',['charlesmanker@gmail.com'],msg.as_string())
+		smtp.sendmail('security@unc.edu',sending,msg.as_string())
 		smtp.quit()
 	def referral(self,ninetyDays): # This is called in the case where you have >90 days vulns
 		import smtplib
@@ -66,7 +70,7 @@ class Department:
 		msg['To'] = 'security@unc.edu' 
 		msg['From'] = 'security@unc.edu' 
 		smtp = smtplib.SMTP('relay.unc.edu',25)
-		smtp.sendmail('charlesmanker@gmail.com',['charlesmanker@gmail.com'],msg.as_string())
+		smtp.sendmail('security@unc.edu',['security@unc.edu'],msg.as_string())
 		smtp.quit()
 	def addServer(self, server):
 		self.servers.append(server)
