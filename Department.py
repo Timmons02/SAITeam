@@ -4,7 +4,7 @@ class Department:
 		self.servers = [server]
 		self.path = folder
 		self.name = name
-		self.emails = emails.getEmail(self.name)
+		self.emails = emails.getEmail(self.name) # the Department is passed the database connection, this gets the actual list of emails for the department
 		self.emailflag = emailflag
 	def writeFile(self):
 		ninetyDays = list()
@@ -46,9 +46,9 @@ class Department:
 			print 'No email address associated with department '+self.name+'. You will receive a summary report but the system administrator will not.'
 		import smtplib
 		commaspace = ', '
-		sending = self.emails
-		sending.append('security@unc.edu')
-		tolist = commaspace.join(sending)
+		sending = self.emails 
+		sending.append('security@unc.edu') #adds security to list of emails to be sent to
+		tolist = commaspace.join(sending) # puts it in the proper format for email header
 		from email.MIMEText import MIMEText 
 		text = open("./"+self.path+"/"+self.name+".txt",'r')
 		msg = MIMEText(text.read())
