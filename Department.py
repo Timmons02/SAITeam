@@ -62,7 +62,7 @@ class Department:
 		from email.MIMEText import MIMEText
 		text = "The department "+self.name+" has had the following vulnerabilities on its system for a period of greater than 90 days.\n\n"
 		for vuln in ninetyDays:
-			file.write(str(vuln[2])+" days - "+vuln[1]+" QID: "+vuln[0].getQID()+" "+vuln[0].getName()+" Level: "+vuln[0].getLevel()+" Threat: "+vuln[0].getSum_threat()+" Impact: "+vuln[0].getSum_impact()+"\n\n")
+			text = text + str(vuln[2])+" days - "+vuln[1]+" QID: "+vuln[0].getQID()+" "+vuln[0].getName()+" Level: "+vuln[0].getLevel()+" Threat: "+vuln[0].getSum_threat()+" Impact: "+vuln[0].getSum_impact()+"\n\n"
 		msg = MIMEText(text)
 		msg['Subject'] = "VPR_Referral "+self.name
 		msg['To'] = 'cmanker@email.unc.edu' 
