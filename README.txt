@@ -33,7 +33,7 @@ The schema is as follows:
 | E_MAIL    | text | YES  |     | NULL    |       |
 +-----------+------+------+-----+---------+-------+
 
-ReadSErvers.py: Takes the two CSV files, ag_list.csv and HOST.csv and concatentates them into a dictionary
+ReadServers.py: Takes the two CSV files, ag_list.csv and HOSTS.csv and concatentates them into a dictionary
 	where the IP address is the key and the department is the value. This is used for sort hosts into 
 	two departments.
 parser.py: Used to look through an HTML file for specific start tags and data, sometimes with specific
