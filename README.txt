@@ -13,6 +13,15 @@ creates the dictionary (ReadServers.py) between IP addresses and departments, pa
 then creates output files and writes emails (Department.py). 
 
 dbManager.py: Connects to the database which keeps track of vulnerability dates when they were first and last seen.
+The schema of the database is as follows:
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| first_saw | date        | YES  |     | NULL    |       |
+| last_saw  | date        | YES  |     | NULL    |       |
+| qid       | int(11)     | NO   | PRI | NULL    |       |
+| ip        | varchar(30) | NO   | PRI | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
 email_db.py: Makes a connection to the email database and gets a list of emails for a given department.
 ReadSErvers.py: Takes the two CSV files, ag_list.csv and HOST.csv and concatentates them into a dictionary
 	where the IP address is the key and the department is the value. This is used for sort hosts into 
@@ -32,25 +41,25 @@ DEPENDENCIES
 The html structure is critical to the parser. Changing the following tags/data will result in incorrect parsing.
 
 The following start tags and their name/value pair attributes are used in settings important flags in the Python code:
-	“dl” tag with attribute name = “id” value = “rpt_sum_det” before the date data
-	“dd” tag marking the date, directly after the above tag
-	“span” tag with attribute name = “class” and value = “host_id” before the host name data
-	“div” tag with attribute 1 name = “class” value = “severity_icon” and attribute 2 name = “title” value = “Vulnerability – level 4” OR value = “Vulnerability – level 5” before a vulnerability level
-	“img” tag after the above tag to mark incoming vulnerability level data
-	“acronym” tag with attribute name = “title” value = “Qualys Identification”
-	“dd” tag after the above tag to mark a following QID
-	“div” tag with attribute name = “id” value = “94652” before hosts not alive
-	“div” tag with attribute name = “id” value = “94654” before failed Windows hosts
-	“div” tag with attribute name = “class” value = “report_result” before failed Windows hosts
-	“div” tag with attribute name = “id” value = “94655” before failed Unix/Cisco hosts
-	“div” tag with attribute name = “class” value = “report_result” before failed Unix/Cisco hosts
-	“div” tag with attribute name = “id” value = “94656” before failed Oracle hosts
-	“div” tag with attribute name = “class” value = “report_result” before failed Oracle hosts
+	ï¿½dlï¿½ tag with attribute name = ï¿½idï¿½ value = ï¿½rpt_sum_detï¿½ before the date data
+	ï¿½ddï¿½ tag marking the date, directly after the above tag
+	ï¿½spanï¿½ tag with attribute name = ï¿½classï¿½ and value = ï¿½host_idï¿½ before the host name data
+	ï¿½divï¿½ tag with attribute 1 name = ï¿½classï¿½ value = ï¿½severity_iconï¿½ and attribute 2 name = ï¿½titleï¿½ value = ï¿½Vulnerability ï¿½ level 4ï¿½ OR value = ï¿½Vulnerability ï¿½ level 5ï¿½ before a vulnerability level
+	ï¿½imgï¿½ tag after the above tag to mark incoming vulnerability level data
+	ï¿½acronymï¿½ tag with attribute name = ï¿½titleï¿½ value = ï¿½Qualys Identificationï¿½
+	ï¿½ddï¿½ tag after the above tag to mark a following QID
+	ï¿½divï¿½ tag with attribute name = ï¿½idï¿½ value = ï¿½94652ï¿½ before hosts not alive
+	ï¿½divï¿½ tag with attribute name = ï¿½idï¿½ value = ï¿½94654ï¿½ before failed Windows hosts
+	ï¿½divï¿½ tag with attribute name = ï¿½classï¿½ value = ï¿½report_resultï¿½ before failed Windows hosts
+	ï¿½divï¿½ tag with attribute name = ï¿½idï¿½ value = ï¿½94655ï¿½ before failed Unix/Cisco hosts
+	ï¿½divï¿½ tag with attribute name = ï¿½classï¿½ value = ï¿½report_resultï¿½ before failed Unix/Cisco hosts
+	ï¿½divï¿½ tag with attribute name = ï¿½idï¿½ value = ï¿½94656ï¿½ before failed Oracle hosts
+	ï¿½divï¿½ tag with attribute name = ï¿½classï¿½ value = ï¿½report_resultï¿½ before failed Oracle hosts
 
 The following data is used in setting important flags in the Python code:
-	“THREAT” before the threat summary data
-	“IMPACT” before the impact summary data
-	“SOLUTION” before the solution summary data
+	ï¿½THREATï¿½ before the threat summary data
+	ï¿½IMPACTï¿½ before the impact summary data
+	ï¿½SOLUTIONï¿½ before the solution summary data
 
 	
 PARSER CLASS STRUCTURE
@@ -59,10 +68,10 @@ Server
 This object represents one of the scanned servers.
 
 	Fields
-	date 		[string] – the date of the scan
-	ip_host 	[string] – the IP address and host name of the scanned server
-	vuls 		[array] – a list of Vulnerability objects
-	failed_port 	[string] – a port that failed to scan. This only occurs on Oracle servers.
+	date 		[string] ï¿½ the date of the scan
+	ip_host 	[string] ï¿½ the IP address and host name of the scanned server
+	vuls 		[array] ï¿½ a list of Vulnerability objects
+	failed_port 	[string] ï¿½ a port that failed to scan. This only occurs on Oracle servers.
 
 	Methods
 	__init__ (ip_host)	Initializes a server with an IP address and host name.
@@ -81,11 +90,11 @@ This object represents a vulnerability that is found on a server.
 
 	Fields
 	name		[string] - the name of the vulnerability
-	qid 		[string] – the Qualys Identifier for this specific vulnerability
-	level 		[integer] – the assigned Qualys level of this threat
-	sum_threat	[string] – the threat summary
-	sum_impact 	[string] – the impact summary
-	sum_solution	[string] – the solution summary
+	qid 		[string] ï¿½ the Qualys Identifier for this specific vulnerability
+	level 		[integer] ï¿½ the assigned Qualys level of this threat
+	sum_threat	[string] ï¿½ the threat summary
+	sum_impact 	[string] ï¿½ the impact summary
+	sum_solution	[string] ï¿½ the solution summary
 
 	Methods
 	__init__(string, integer, string, string, string)	initializes the Vulnerability object
