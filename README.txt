@@ -23,6 +23,16 @@ The schema of the database is as follows:
 | ip        | varchar(30) | NO   | PRI | NULL    |       |
 +-----------+-------------+------+-----+---------+-------+
 email_db.py: Makes a connection to the email database and gets a list of emails for a given department.
+The schema is as follows:
++-----------+------+------+-----+---------+-------+
+| Field     | Type | Null | Key | Default | Extra |
++-----------+------+------+-----+---------+-------+
+| SAI_GROUP | text | YES  |     | NULL    |       |
+| NAME      | text | YES  |     | NULL    |       |
+| ONYEN     | text | YES  |     | NULL    |       |
+| E_MAIL    | text | YES  |     | NULL    |       |
++-----------+------+------+-----+---------+-------+
+
 ReadSErvers.py: Takes the two CSV files, ag_list.csv and HOST.csv and concatentates them into a dictionary
 	where the IP address is the key and the department is the value. This is used for sort hosts into 
 	two departments.
