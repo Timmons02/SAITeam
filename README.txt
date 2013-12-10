@@ -150,7 +150,8 @@ MyHTMLParser
 
 ERRORS:
 
-If an error occurs after "Forming database connection...", check your databases and make sure they are properly accessible. If a password or connection has changed, that may be edited in dbManager.py or email_db.py.
+If an error occurs after "Forming database connection...", check your databases and make sure they are properly accessible. If a password or connection has changed, that may be edited in dbManager.py or email_db.py
+Alternatively, if a 'file not found' occurs at this stage, make sure that line 43 of run.py correctly points to HOSTS.csv and ag_list.csv.
 
 If an error occurs after "Parsing file, this may take some time..." it is likely that the html structure of the document has changed. This may range from a minor fix to severe. See the assumptions above about the structure of the html document.
 
