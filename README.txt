@@ -147,3 +147,11 @@ MyHTMLParser
 	portParser(string)			parsers a string that contains  a port number and returns the port number
 	getList()				returns the list of server objects
 
+
+ERRORS:
+
+If an error occurs after "Forming database connection...", check your databases and make sure they are properly accessible. If a password or connection has changed, that may be edited in dbManager.py or email_db.py.
+
+If an error occurs after "Parsing file, this may take some time..." it is likely that the html structure of the document has changed. This may range from a minor fix to severe. See the assumptions above about the structure of the html document.
+
+If an error occurs after "Generating output...", there was a problem with output/email authentication. Check Department.py to fix the error.
