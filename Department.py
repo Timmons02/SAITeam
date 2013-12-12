@@ -45,7 +45,7 @@ class Department:
 		import smtplib
 		commaspace = ', '
 		sending = self.emails 
-		sending.append('cmanker@email.unc.edu') #adds security to list of emails to be sent to
+		sending.append('security@unc.edu') #adds security to list of emails to be sent to
 		tolist = commaspace.join(sending) # puts it in the proper format for email header
 		from email.MIMEText import MIMEText 
 		text = open("./"+self.path+"/"+self.name+".txt",'r')
@@ -65,10 +65,10 @@ class Department:
 			text = text + str(vuln[2])+" days - "+vuln[1]+" QID: "+vuln[0].getQID()+" "+vuln[0].getName()+" Level: "+vuln[0].getLevel()+" Threat: "+vuln[0].getSum_threat()+" Impact: "+vuln[0].getSum_impact()+"\n\n"
 		msg = MIMEText(text)
 		msg['Subject'] = "VPR_Referral "+self.name
-		msg['To'] = 'cmanker@email.unc.edu' 
+		msg['To'] = 'security@unc.edu' 
 		msg['From'] = 'security@unc.edu' 
 		smtp = smtplib.SMTP('relay.unc.edu',25)
-		smtp.sendmail('security@unc.edu',['cmanker@email.unc.edu'],msg.as_string())
+		smtp.sendmail('security@unc.edu',['security@unc.edu'],msg.as_string())
 		smtp.quit()
 	def addServer(self, server):
 		self.servers.append(server)
